@@ -1,20 +1,22 @@
 [![Build Status](https://travis-ci.org/open-io/ansible-role-openio-blackbox.svg?branch=master)](https://travis-ci.org/open-io/ansible-role-openio-blackbox)
 # Ansible role `blackbox`
 
-An Ansible role for PURPOSE. Specifically, the responsibilities of this role are to:
-
--
+An Ansible role for deploying blackbox exporter (monitoring).
 
 ## Requirements
 
-- Ansible 2.4+
+- Ansible 2.5+
 
 ## Role Variables
 
 
-| Variable   | Default | Comments (type)  |
-| :---       | :---    | :---             |
-| `openio_blackbox_...` | `...`   | ...              |
+| Variable                         | Default                      | Comments (type)                   |
+|:-------------------------------- |:---------------------------- |:--------------------------------- |
+| `openio_blackbox_config_file`    | `/etc/blackbox_exporter.yml` | Path to blackbox config file      |
+| `openio_blackbox_bind_interface` | -                            | Interface to listen on            |
+| `openio_blackbox_bind_address`   | -                            | Address to listen on              |
+| `openio_blackbox_bind_port`      | 9115                         | Port to listen on                 |
+| `openio_blackbox_provision_only` | false                        | Provision only without restarting |
 
 ## Dependencies
 
@@ -27,15 +29,8 @@ No dependencies.
   become: true
   vars:
     NS: OPENIO
-
   roles:
-    - role: repo
-      openio_repository_products:
-        sds:
-          release: "18.10"
     - role: users
-    - role: gridinit
-      openio_gridinit_namespace: "{{ NS }}"
     - role: blackbox
 ```
 
