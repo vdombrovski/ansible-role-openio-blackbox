@@ -1,7 +1,6 @@
 ---
-ignore: |
-  docker-tests/
-  .travis.yml
+ignore:
+  env/**/*
 rules:
   braces:
     level: error

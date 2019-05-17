@@ -1,5 +1,5 @@
 ---
-openio_blackbox_config_file: /etc/blackbox_exporter.conf
+openio_blackbox_config_file: /etc/blackbox_exporter.yml
 
 openio_blackbox_bind_interface: "{{ openio_bind_mgmt_interface | d(ansible_default_ipv4.alias) }}"
 openio_blackbox_bind_address: "{{ openio_bind_mgmt_address \

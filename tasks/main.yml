@@ -11,10 +11,13 @@
 - name: Download blackbox exporter binary to local folder
   become: false
   unarchive:
-    src: "https://github.com/prometheus/blackbox_exporter/releases/download/v{{ openio_blackbox_exporter_version }}/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
+    src: "https://github.com/prometheus/blackbox_exporter/releases/download/v{{ openio_blackbox_exporter_version }}\
+/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-\
+{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}.tar.gz"
     dest: "/tmp"
     remote_src: true
-    creates: "/tmp/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/blackbox_exporter"
+    creates: "/tmp/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-\
+{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/blackbox_exporter"
   register: _download_binary
   until: _download_binary is succeeded
   retries: 5
@@ -25,7 +28,8 @@
 
 - name: Propagate blackbox exporter binary
   copy:
-    src: "/tmp/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/blackbox_exporter"
+    src: "/tmp/blackbox_exporter-{{ openio_blackbox_exporter_version }}.linux-\
+{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}/blackbox_exporter"
     dest: "/usr/local/bin/blackbox_exporter"
     mode: 0750
     owner: "openio"
@@ -47,6 +51,7 @@
     owner: "openio"
     group: "openio"
   tags: install
+  register: _blackbox_systemd
 
 - name: Create defaults file
   template:
@@ -55,19 +60,37 @@
     owner: root
     group: root
     mode: 0644
+  register: _blackbox_defaults
 
 - name: Set blackbox configuration
   copy:
     src: "blackbox_exporter.yml"
-    dest: "/etc/blackbox_exporter.yml"
+    dest: "{{ openio_blackbox_config_file }}"
     owner: "openio"
     group: "openio"
   tags: configure
+  register: _blackbox_conf
 
 - name: Ensure blackbox service is started and enabled
-  become: true
   systemd:
     daemon_reload: true
     name: blackbox_exporter
-    state: "{{ 'started' if openio_blackbox_provision_only else 'restarted' }}"
+    state: "restarted"
     enabled: true
+  when:
+    - _blackbox_systemd is changed or _blackbox_conf is changed or _blackbox_defaults is changed
+    - not openio_blackbox_provision_only
+
+- name: Check that service is up
+  uri:
+    url: "http://{{ openio_blackbox_bind_address }}:{{ openio_blackbox_bind_port }}"
+    return_content: true
+    status_code: 200
+    register: _blackbox_check
+    retries: 3
+    delay: 5
+    until: _blackbox_check is success
+    changed_when: false
+  when:
+    - not openio_blackbox_provision_only
+...
