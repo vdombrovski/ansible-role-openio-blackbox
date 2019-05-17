@@ -1,0 +1,10 @@
+---
+openio_blackbox_config_file: /etc/blackbox_exporter.conf
+
+openio_blackbox_bind_interface: "{{ openio_bind_mgmt_interface | d(ansible_default_ipv4.alias) }}"
+openio_blackbox_bind_address: "{{ openio_bind_mgmt_address \
+  | default(hostvars[inventory_hostname]['ansible_' + openio_blackbox_bind_interface]['ipv4']['address']) }}"
+openio_blackbox_bind_port: 9115
+
+openio_blackbox_provision_only: false
+...

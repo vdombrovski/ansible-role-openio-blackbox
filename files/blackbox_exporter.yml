@@ -1,0 +1,80 @@
+---
+modules:
+  account:
+    prober: http
+    timeout: 5s
+  blackbox:
+    prober: http
+    timeout: 5s
+  oiofs:
+    prober: http
+    timeout: 5s
+  oioping:
+    prober: tcp
+    timeout: 5s
+    tcp:
+      query_response:
+        # REQ FORMAT: \x00\x00\x0000.\x80 00000000000000000000000000000000\x81\x08REQ_PING\xa3\x0
+        - send: !!binary AAAAMDAugCAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMIEIUkVRX1BJTkejAAo=
+        - expect: ".*OK.*"
+  beanstalkd:
+    prober: tcp
+    tcp:
+      query_response:
+        - send: "stats\r\n"
+        - expect: OK.*
+    timeout: 5s
+  conscience:
+    prober: http
+    timeout: 5s
+  icmpcheck:
+    icmp:
+      preferred_ip_protocol: ipv4
+    prober: icmp
+    timeout: 5s
+  meta0:
+    prober: http
+    timeout: 5s
+  meta1:
+    prober: http
+    timeout: 5s
+  meta2:
+    prober: http
+    timeout: 5s
+  oioproxy:
+    prober: http
+    timeout: 5s
+  oioswift:
+    prober: http
+    timeout: 5s
+  rawx:
+    prober: http
+    timeout: 5s
+  rdir:
+    prober: http
+    timeout: 5s
+  redis:
+    prober: tcp
+    tcp:
+      query_response:
+        - send: PING
+        - expect: PONG
+    timeout: 5s
+  redissentinel:
+    prober: tcp
+    tcp:
+      query_response:
+        - send: PING
+        - expect: PONG
+    timeout: 5s
+  tcpcheck:
+    prober: tcp
+    timeout: 5s
+  zookeeper:
+    prober: tcp
+    tcp:
+      query_response:
+        - send: ruok
+        - expect: imok
+    timeout: 5s
+...

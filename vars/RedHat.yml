@@ -1,0 +1,7 @@
+# roles/blackbox/vars/RedHat.yml
+# Distribution-specific variables for RHEL, CentOS, ...
+---
+blackbox_packages:
+  - openio-blackbox
+syslog_user: openio
+...
