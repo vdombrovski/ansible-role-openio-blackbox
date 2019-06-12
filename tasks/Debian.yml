@@ -10,6 +10,7 @@
   until: install_packages is success
   retries: 5
   delay: 2
+  tags: install
 
 # TODO (VDO): replace by package
 - name: Download blackbox exporter binary to local folder

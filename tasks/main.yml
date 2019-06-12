@@ -4,7 +4,9 @@
   with_first_found:
     - "{{ ansible_distribution }}.yml"
     - "{{ ansible_os_family }}.yml"
-  tags: install
+  tags:
+    - install
+    - configure
 
 - name: Set defaults file
   template:
@@ -14,6 +16,7 @@
     group: root
     mode: 0644
   register: _blackbox_defaults
+  tags: configure
 
 - name: Set blackbox configuration
   copy:
@@ -33,6 +36,7 @@
   when:
     - _blackbox_conf is changed or _blackbox_defaults is changed
     - not openio_blackbox_provision_only
+  tags: configure
 
 - name: Check that service is up
   uri:
@@ -44,6 +48,7 @@
     delay: 5
     until: _blackbox_check is success
     changed_when: false
+  tags: configure
   when:
     - not openio_blackbox_provision_only
 ...

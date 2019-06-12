@@ -1,7 +1,0 @@
-# roles/blackbox/vars/Debian.yml
-# Distribution-specific variables for Ubuntu, Debian, ...
----
-blackbox_packages:
-  - openio-blackbox
-syslog_user: syslog
-...
