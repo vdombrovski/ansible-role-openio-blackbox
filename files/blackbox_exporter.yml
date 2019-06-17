@@ -29,7 +29,7 @@ modules:
     timeout: 5s
   icmpcheck:
     icmp:
-      preferred_ip_protocol: ipv4
+      preferred_ip_protocol: ip4
     prober: icmp
     timeout: 5s
   meta0:

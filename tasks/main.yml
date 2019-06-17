@@ -31,7 +31,7 @@
   systemd:
     daemon_reload: true
     name: blackbox_exporter
-    state: "restarted"
+    state: "{{ 'started' if openio_blackbox_provision_only else 'restarted' }}"
     enabled: true
   when:
     - _blackbox_conf is changed or _blackbox_defaults is changed
@@ -43,12 +43,12 @@
     url: "http://{{ openio_blackbox_bind_address }}:{{ openio_blackbox_bind_port }}"
     return_content: true
     status_code: 200
-    register: _blackbox_check
-    retries: 3
-    delay: 5
-    until: _blackbox_check is success
-    changed_when: false
-  tags: configure
+  register: _blackbox_check
+  retries: 3
+  delay: 5
+  until: _blackbox_check is success
+  changed_when: false
   when:
     - not openio_blackbox_provision_only
+  tags: configure
 ...
